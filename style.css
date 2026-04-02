@@ -1,0 +1,99 @@
+:root {
+    --pga-green: #1b4d3e;
+    --sand-beige: #f4f1ea;
+    --slate-gray: #2c3e50;
+    --pure-white: #ffffff;
+    --error-red: #d9534f;
+    --focus-gold: #c5a059;
+}
+
+/* Base Accessibility */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--slate-gray);
+    background-color: var(--sand-beige);
+    margin: 0;
+    padding: 15px;
+}
+
+header {
+    background: var(--pga-green);
+    color: var(--pure-white);
+    padding: 2rem;
+    text-align: center;
+    border-radius: 8px 8px 0 0;
+    border-bottom: 4px solid var(--focus-gold);
+}
+
+/* Mobile-First Layout */
+form {
+    background: var(--pure-white);
+    padding: 20px;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--pga-green);
+}
+
+input, select {
+    padding: 12px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+input:focus {
+    outline: 3px solid var(--focus-gold);
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background: var(--pga-green);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #143a2f;
+}
+
+/* Table Styling */
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+    min-width: 100px;
+}
+
+th {
+    background: var(--slate-gray);
+    color: white;
+}
