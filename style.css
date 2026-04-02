@@ -1,228 +1,138 @@
-/* PBCC Brand Colors */
+/* PBCC Scheduler - Modern 2026 Theme */
 :root {
-    --pga-green: #1b4d3e;        /* Deep Fairway Green */
-    --pga-gold: #c5a059;         /* Professional Accent Gold */
-    --clubhouse-white: #ffffff;
-    --sand-beige: #f4f1ea;       /* Subtle Bunker Beige for Background */
-    --slate-gray: #2c3e50;       /* Professional Text */
-    --error-red: #b22222;
+    --primary-teal: #006d77;      /* Professional & Calming */
+    --accent-gold: #e29578;       /* Warm Citrus Pop */
+    --bg-cream: #f1f2f6;          /* Soft White/Cloud Dancer */
+    --text-dark: #2d3436;         /* Deep Charcoal for readability */
+    --white: #ffffff;
+    --shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* Base Accessibility & Reset */
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-cream);
+    color: var(--text-dark);
     line-height: 1.6;
-    color: var(--slate-gray);
-    background-color: var(--sand-beige);
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Header Section */
-header {
-    width: 100%;
-    background: var(--pga-green);
-    color: var(--clubhouse-white);
-    padding: 1.5rem 1rem;
-    text-align: center;
-    border-bottom: 5px solid var(--pga-gold);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-}
-
-header h1 {
-    margin: 0;
-    font-size: 1.4rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-header p {
-    margin: 5px 0 0;
-    font-size: 0.9rem;
-    opacity: 0.9;
-}
-
-/* Layout Containers */
-main {
-    width: 100%;
-    max-width: 600px; /* Perfect for mobile and tablet */
     padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 3px solid var(--primary-teal);
+    padding-bottom: 10px;
+}
+
+h1 { color: var(--primary-teal); font-size: 1.8rem; }
+
+/* Container Styling */
+#app {
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 section {
-    background: var(--clubhouse-white);
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    background: var(--white);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
 }
 
-h2 {
-    color: var(--pga-green);
-    font-size: 1.2rem;
-    border-bottom: 2px solid var(--sand-beige);
-    padding-bottom: 10px;
-    margin-top: 0;
-}
-
-/* Form Styling */
+/* Form Layout */
 .field-group {
+    margin-bottom: 20px;
     display: flex;
-    flex-direction: column;
-    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-label {
-    font-weight: 700;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-    color: var(--pga-green);
+label { 
+    display: block; 
+    font-weight: 600; 
+    margin-bottom: 5px; 
+    width: 100%;
 }
 
 input, select {
     padding: 12px;
-    border: 2px solid #e0e0e0;
-    border-radius: 6px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     font-size: 1rem;
-    background-color: #fafafa;
-    margin-bottom: 10px;
+    flex: 1 1 200px; /* Responsive width */
 }
 
-input:focus, select:focus {
-    outline: none;
-    border-color: var(--pga-gold);
-    background-color: #fff;
-}
-
-/* Dynamic Date Row Styling */
-.header-with-action {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
+/* Dynamic Date Rows */
 .date-row {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr auto 1.2fr;
+    display: flex;
     gap: 10px;
     align-items: center;
-    background: var(--sand-beige);
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    border-left: 4px solid var(--pga-gold);
-}
-
-.to-label {
-    font-weight: bold;
-    color: var(--pga-green);
+    width: 100%;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
 }
 
 /* Buttons */
-button {
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.2s ease;
-}
-
 .primary-btn {
-    width: 100%;
-    padding: 16px;
-    background: var(--pga-green);
+    background: var(--primary-teal);
     color: white;
+    padding: 15px 25px;
     border: none;
-    border-radius: 6px;
-    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
     font-weight: bold;
-    text-transform: uppercase;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
 }
 
-.primary-btn:active {
-    transform: scale(0.98);
-}
+.primary-btn:active { transform: scale(0.98); }
 
 .secondary-btn {
-    background: var(--slate-gray);
+    background: var(--accent-gold);
     color: white;
-    border: none;
     padding: 8px 15px;
-    border-radius: 4px;
-    font-size: 0.85rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
-/* Table Design */
+/* Responsive Table */
 .table-responsive {
-    width: 100%;
-    overflow-x: auto; /* Crucial for viewing the full week on mobile */
-    border-radius: 4px;
-    border: 1px solid #ddd;
+    overflow-x: auto; /* Allows swiping on phones */
+    margin-top: 20px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 600px; /* Forces scrolling rather than squishing */
+    min-width: 600px; /* Prevents text from wrapping too much */
 }
 
 th, td {
-    padding: 12px 8px;
-    text-align: center;
+    padding: 12px;
+    text-align: left;
     border-bottom: 1px solid #eee;
-    font-size: 0.85rem;
 }
 
-th {
-    background: var(--pga-green);
-    color: white;
-    text-transform: uppercase;
-}
+th { background: var(--primary-teal); color: white; }
 
-tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
+tr:hover { background-color: #f5f5f5; }
 
-/* Responsive Adjustments */
-@media (max-width: 480px) {
-    .date-row {
-        grid-template-columns: 1fr 1fr; /* Stack dates on top of each other on tiny screens */
-    }
-    .to-label {
-        grid-column: span 2;
-        text-align: center;
-        margin: -5px 0;
-    }
-}
-/* This only triggers when the 'Print' button is pressed */
+/* PRINT STYLES - Makes the PDF look perfect */
 @media print {
-    header, #form-container, #exportBtn, .secondary-btn, hr {
-        display: none !important;
-    }
-    body {
-        background-color: white;
-    }
-    section {
-        box-shadow: none;
-        padding: 0;
-    }
-    .table-responsive {
-        overflow: visible;
-    }
-    table {
-        min-width: 100%;
-        border: 2px solid black;
-    }
-    th {
-        background-color: #eee !important;
-        color: black !important;
-    }
+    #form-container, .secondary-btn, header { display: none !important; }
+    body { padding: 0; background: white; }
+    section { box-shadow: none; padding: 0; }
+    th { color: black; border-bottom: 2px solid black; }
+}
+
+/* MOBILE FIXES */
+@media (max-width: 600px) {
+    .date-row { flex-direction: column; align-items: stretch; }
+    h1 { font-size: 1.4rem; }
+    body { padding: 10px; }
 }
