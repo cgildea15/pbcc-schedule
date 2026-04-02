@@ -1,6 +1,13 @@
-// 1. Function to add date rows
+// 1. HELPER: This "window." prefix is CRITICAL to fix your error
 window.addDateRow = function() {
+    console.log("Add Date button clicked!"); // This will show in your console if it works
     const container = document.getElementById('dateListContainer');
+    
+    if (!container) {
+        console.error("Could not find the dateListContainer!");
+        return;
+    }
+
     const newRow = document.createElement('div');
     newRow.className = 'date-row';
     newRow.innerHTML = `
