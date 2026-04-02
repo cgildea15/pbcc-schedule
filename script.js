@@ -99,3 +99,33 @@ function updateTable() {
         tbody.appendChild(row);
     });
 }
+
+// 5. CSV Export Logic
+document.getElementById('exportBtn').addEventListener('click', () => {
+    if (employees.length === 0) {
+        alert("No employee data to export.");
+        return;
+    }
+
+    // Create the CSV Header
+    let csvContent = "Employee,Mon,Tue,Wed,Thu,Fri,Sat,Sun\n";
+
+    // Add each employee row
+    employees.forEach(emp => {
+        // This matches the table logic: Mon-Fri working, Sat-Sun OFF
+        // (You can adjust this logic as we make the scheduler smarter)
+        let row = `${emp.name},${emp.hours},${emp.hours},${emp.hours},${emp.hours},${emp.hours},OFF,OFF`;
+        csvContent += row + "\n";
+    });
+
+    // Create a "hidden" link to trigger the download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "PBCC_Outdoor_Schedule.csv");
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
