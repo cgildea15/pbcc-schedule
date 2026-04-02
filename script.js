@@ -1,19 +1,13 @@
-// 1. Data & Localization Setup
-const labels = {
-    en: {
-        off: "OFF",
-        exportSuccess: "CSV Generated"
-    }
-};
+/**
+ * PBCC | Outdoor Facilities Scheduler
+ * Logic: Firebase Real-Time Sync & CSV Export
+ */
 
-let employees = [];
-
-// 2. Add Date Row Function (for the "+ Add Date" button)
-function addDateRow() {
+// 1. HELPER: Function to add more date rows in the form
+window.addDateRow = function() {
     const container = document.getElementById('dateListContainer');
     const newRow = document.createElement('div');
     newRow.className = 'date-row';
-    
     newRow.innerHTML = `
         <select class="date-type">
             <option value="required">Required OFF</option>
@@ -24,108 +18,121 @@ function addDateRow() {
         <input type="date" class="date-end">
     `;
     container.appendChild(newRow);
-}
+};
 
-// 3. Submission Logic (The "Add to Schedule" button)
-document.getElementById('addEmployee').addEventListener('click', () => {
-    const firstName = document.getElementById('firstName').value;
+// 2. ACTION: Add Employee to Firebase
+document.getElementById('addEmployee').addEventListener('click', async () => {
+    // Dynamic import of Firestore functions
+    const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
     
-    // Validation: Only First Name is strictly mandatory
+    const firstName = document.getElementById('firstName').value.trim();
     if (!firstName) {
-        alert("Employee First Name is required to generate a schedule.");
+        alert("First Name is required to save an employee.");
         return;
     }
 
+    // Capture all date requests from the dynamic rows
     const dateEntries = [];
     document.querySelectorAll('.date-row').forEach(row => {
         const start = row.querySelector('.date-start').value;
-        const end = row.querySelector('.date-end').value;
-        
-        if (start) { 
+        if (start) {
             dateEntries.push({
                 type: row.querySelector('.date-type').value,
                 start: start,
-                end: end || start 
+                end: row.querySelector('.date-end').value || start
             });
         }
     });
 
-    const employee = {
+    // Package the data for the cloud
+    const employeeData = {
         name: `${firstName} ${document.getElementById('lastInitial').value}.`.trim(),
         datesOff: dateEntries,
-        target: document.getElementById('targetValue').value || "Not Specified",
-        hours: `${document.getElementById('shiftStart').value} - ${document.getElementById('shiftEnd').value}`
+        target: document.getElementById('targetValue').value || "N/A",
+        hours: `${document.getElementById('shiftStart').value} - ${document.getElementById('shiftEnd').value}`,
+        createdAt: new Date() // Used to sort the table by entry time
     };
 
-    employees.push(employee);
-    updateTable();
-    
-    // Optional: Clear the form for the next employee
-    document.getElementById('scheduleForm').reset();
-    // Keep only one date row after reset
-    document.getElementById('dateListContainer').innerHTML = `
-        <div class="date-row">
-            <select class="date-type">
-                <option value="required">Required OFF</option>
-                <option value="requested">Requested OFF</option>
-            </select>
-            <input type="date" class="date-start">
-            <span class="to-label">to</span>
-            <input type="date" class="date-end">
-        </div>
-    `;
+    try {
+        // 'window.db' is initialized in the index.html script tag
+        await addDoc(collection(window.db, "employees"), employeeData);
+        
+        // Reset the form for the next entry
+        document.getElementById('scheduleForm').reset();
+        
+        // Reset the Date List Container back to one single clean row
+        document.getElementById('dateListContainer').innerHTML = `
+            <div class="date-row">
+                <select class="date-type">
+                    <option value="required">Required OFF</option>
+                    <option value="requested">Requested OFF</option>
+                </select>
+                <input type="date" class="date-start">
+                <span class="to-label">to</span>
+                <input type="date" class="date-end">
+            </div>
+        `;
+        
+        alert("Employee Saved to PBCC Cloud!");
+    } catch (e) {
+        console.error("Firebase Error:", e);
+        alert("Could not save. Please ensure Firestore is in 'Test Mode'.");
+    }
 });
 
-// 4. Update the Table Display
-function updateTable() {
-    const tbody = document.querySelector('#scheduleTable tbody');
-    tbody.innerHTML = '';
-
-    employees.forEach(emp => {
-        const row = document.createElement('tr');
+// 3. SYNC: Real-time listener to build the table
+async function syncTable() {
+    const { collection, onSnapshot, query, orderBy } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+    
+    // Sort by entry time so the list doesn't jump around
+    const q = query(collection(window.db, "employees"), orderBy("createdAt", "asc"));
+    
+    onSnapshot(q, (snapshot) => {
+        const tbody = document.querySelector('#scheduleTable tbody');
+        tbody.innerHTML = ''; // Clear table before rebuilding
         
-        // This version puts the hours in every day as a placeholder.
-        // In the next step, we'll make it smarter to detect which day is "OFF" based on the dates.
-        row.innerHTML = `
-            <td>${emp.name}</td>
-            <td>${emp.hours}</td>
-            <td>${emp.hours}</td>
-            <td>${emp.hours}</td>
-            <td>${emp.hours}</td>
-            <td>${emp.hours}</td>
-            <td>${labels.en.off}</td>
-            <td>${labels.en.off}</td>
-        `;
-        tbody.appendChild(row);
+        snapshot.forEach((doc) => {
+            const emp = doc.data();
+            const row = document.createElement('tr');
+            
+            // Note: This layout assumes Mon-Fri are working days and Sat-Sun are OFF.
+            row.innerHTML = `
+                <td>${emp.name}</td>
+                <td>${emp.hours}</td>
+                <td>${emp.hours}</td>
+                <td>${emp.hours}</td>
+                <td>${emp.hours}</td>
+                <td>${emp.hours}</td>
+                <td>OFF</td>
+                <td>OFF</td>
+            `;
+            tbody.appendChild(row);
+        });
     });
 }
 
-// 5. CSV Export Logic
+// Start syncing when the page finishes loading
+window.onload = syncTable;
+
+// 4. EXPORT: Generate CSV for Excel/Printing
 document.getElementById('exportBtn').addEventListener('click', () => {
-    if (employees.length === 0) {
-        alert("No employee data to export.");
+    let csv = "Employee,Mon,Tue,Wed,Thu,Fri,Sat,Sun\n";
+    
+    const tableRows = document.querySelectorAll("#scheduleTable tbody tr");
+    if (tableRows.length === 0) {
+        alert("No employees in the schedule to export.");
         return;
     }
 
-    // Create the CSV Header
-    let csvContent = "Employee,Mon,Tue,Wed,Thu,Fri,Sat,Sun\n";
-
-    // Add each employee row
-    employees.forEach(emp => {
-        // This matches the table logic: Mon-Fri working, Sat-Sun OFF
-        // (You can adjust this logic as we make the scheduler smarter)
-        let row = `${emp.name},${emp.hours},${emp.hours},${emp.hours},${emp.hours},${emp.hours},OFF,OFF`;
-        csvContent += row + "\n";
+    tableRows.forEach(tr => {
+        const rowData = Array.from(tr.cells).map(td => td.innerText);
+        csv += rowData.join(",") + "\n";
     });
 
-    // Create a "hidden" link to trigger the download
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", "PBCC_Outdoor_Schedule.csv");
-    link.style.visibility = 'hidden';
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'PBCC_Outdoor_Schedule.csv';
+    link.style.display = 'none';
     document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-});
