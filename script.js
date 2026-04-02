@@ -6,6 +6,8 @@
 // 1. HELPER: Function to add more date rows in the form
 window.addDateRow = function() {
     const container = document.getElementById('dateListContainer');
+    if (!container) return;
+
     const newRow = document.createElement('div');
     newRow.className = 'date-row';
     newRow.innerHTML = `
@@ -22,16 +24,21 @@ window.addDateRow = function() {
 
 // 2. ACTION: Add Employee to Firebase
 document.getElementById('addEmployee').addEventListener('click', async () => {
-    // Dynamic import of Firestore functions
+    // Check if Firebase is ready
+    if (!window.db) {
+        alert("Database is still connecting. Please wait 2 seconds and try again.");
+        return;
+    }
+
     const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
     
     const firstName = document.getElementById('firstName').value.trim();
     if (!firstName) {
-        alert("First Name is required to save an employee.");
+        alert("First Name is required.");
         return;
     }
 
-    // Capture all date requests from the dynamic rows
+    // Capture date requests
     const dateEntries = [];
     document.querySelectorAll('.date-row').forEach(row => {
         const start = row.querySelector('.date-start').value;
@@ -44,23 +51,19 @@ document.getElementById('addEmployee').addEventListener('click', async () => {
         }
     });
 
-    // Package the data for the cloud
     const employeeData = {
         name: `${firstName} ${document.getElementById('lastInitial').value}.`.trim(),
         datesOff: dateEntries,
         target: document.getElementById('targetValue').value || "N/A",
         hours: `${document.getElementById('shiftStart').value} - ${document.getElementById('shiftEnd').value}`,
-        createdAt: new Date() // Used to sort the table by entry time
+        createdAt: new Date()
     };
 
     try {
-        // 'window.db' is initialized in the index.html script tag
         await addDoc(collection(window.db, "employees"), employeeData);
         
-        // Reset the form for the next entry
+        // Reset form
         document.getElementById('scheduleForm').reset();
-        
-        // Reset the Date List Container back to one single clean row
         document.getElementById('dateListContainer').innerHTML = `
             <div class="date-row">
                 <select class="date-type">
@@ -73,29 +76,31 @@ document.getElementById('addEmployee').addEventListener('click', async () => {
             </div>
         `;
         
-        alert("Employee Saved to PBCC Cloud!");
+        alert("Success! Employee added to PBCC Cloud.");
     } catch (e) {
         console.error("Firebase Error:", e);
-        alert("Could not save. Please ensure Firestore is in 'Test Mode'.");
+        alert("Error saving: " + e.message);
     }
 });
 
 // 3. SYNC: Real-time listener to build the table
 async function syncTable() {
+    if (!window.db) {
+        setTimeout(syncTable, 1000); // Retry in 1s if DB isn't ready
+        return;
+    }
+
     const { collection, onSnapshot, query, orderBy } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-    
-    // Sort by entry time so the list doesn't jump around
     const q = query(collection(window.db, "employees"), orderBy("createdAt", "asc"));
     
     onSnapshot(q, (snapshot) => {
         const tbody = document.querySelector('#scheduleTable tbody');
-        tbody.innerHTML = ''; // Clear table before rebuilding
+        if (!tbody) return;
+        tbody.innerHTML = '';
         
         snapshot.forEach((doc) => {
             const emp = doc.data();
             const row = document.createElement('tr');
-            
-            // Note: This layout assumes Mon-Fri are working days and Sat-Sun are OFF.
             row.innerHTML = `
                 <td>${emp.name}</td>
                 <td>${emp.hours}</td>
@@ -111,16 +116,15 @@ async function syncTable() {
     });
 }
 
-// Start syncing when the page finishes loading
 window.onload = syncTable;
 
-// 4. EXPORT: Generate CSV for Excel/Printing
+// 4. EXPORT: Generate CSV
 document.getElementById('exportBtn').addEventListener('click', () => {
     let csv = "Employee,Mon,Tue,Wed,Thu,Fri,Sat,Sun\n";
-    
     const tableRows = document.querySelectorAll("#scheduleTable tbody tr");
+    
     if (tableRows.length === 0) {
-        alert("No employees in the schedule to export.");
+        alert("No data to export.");
         return;
     }
 
@@ -136,3 +140,6 @@ document.getElementById('exportBtn').addEventListener('click', () => {
     link.download = 'PBCC_Outdoor_Schedule.csv';
     link.style.display = 'none';
     document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
