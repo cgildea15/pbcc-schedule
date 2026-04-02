@@ -15,21 +15,35 @@
     <main id="app">
         <section id="form-container" aria-labelledby="form-title">
             <h2 id="form-title">Employee Availability Input</h2>
+            
             <form id="scheduleForm">
                 <div class="field-group">
                     <label for="firstName">First Name *</label>
-                    <input type="text" id="firstName" required aria-required="true">
+                    <input type="text" id="firstName" required aria-required="true" placeholder="e.g. John">
                     
                     <label for="lastInitial">Last Initial</label>
-                    <input type="text" id="lastInitial" maxlength="1">
+                    <input type="text" id="lastInitial" maxlength="1" placeholder="e.g. D">
                 </div>
 
                 <div class="field-group">
-                    <label for="requiredOff">Required Days Off (YYYY-MM-DD)</label>
-                    <input type="date" id="requiredOff">
+                    <div class="header-with-action">
+                        <label id="date-label">Date Requests (Optional)</label>
+                        <button type="button" class="secondary-btn" onclick="addDateRow()" aria-controls="dateListContainer">
+                            + Add Date/Range
+                        </button>
+                    </div>
                     
-                    <label for="requestedOff">Requested Days Off (YYYY-MM-DD)</label>
-                    <input type="date" id="requestedOff">
+                    <div id="dateListContainer">
+                        <div class="date-row">
+                            <select class="date-type" aria-label="Type of request">
+                                <option value="required">Required OFF</option>
+                                <option value="requested">Requested OFF</option>
+                            </select>
+                            <input type="date" class="date-start" aria-label="Start date">
+                            <span class="to-label" aria-hidden="true">to</span>
+                            <input type="date" class="date-end" aria-label="End date">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="field-group">
@@ -49,34 +63,9 @@
                     <input type="time" id="shiftEnd" value="16:00">
                 </div>
 
-                <button type="button" id="addEmployee">Add to Schedule</button>
+                <button type="button" id="addEmployee" class="primary-btn">Add to Schedule</button>
             </form>
         </section>
 
         <section id="report-container" aria-labelledby="report-title">
-            <h2 id="report-title">Generated Monthly Schedule</h2>
-            <div class="table-responsive">
-                <table id="scheduleTable">
-                    <thead>
-                        <tr>
-                            <th>Employee</th>
-                            <th>Mon</th>
-                            <th>Tue</th>
-                            <th>Wed</th>
-                            <th>Thu</th>
-                            <th>Fri</th>
-                            <th>Sat</th>
-                            <th>Sun</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        </tbody>
-                </table>
-            </div>
-            <button id="exportBtn">Download CSV Report</button>
-        </section>
-    </main>
-
-    <script src="script.js"></script>
-</body>
-</html>
+            <hr
