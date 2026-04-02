@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PBCC | Outdoor Facilities Scheduler</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header role="banner">
+        <h1>Outdoor Facilities Scheduler</h1>
+        <p>Palm Beach Country Club | Assistant Manager Portal</p>
+    </header>
+
+    <main id="app">
+        <section id="form-container" aria-labelledby="form-title">
+            <h2 id="form-title">Employee Availability Input</h2>
+            <form id="scheduleForm">
+                <div class="field-group">
+                    <label for="firstName">First Name *</label>
+                    <input type="text" id="firstName" required aria-required="true">
+                    
+                    <label for="lastInitial">Last Initial</label>
+                    <input type="text" id="lastInitial" maxlength="1">
+                </div>
+
+                <div class="field-group">
+                    <label for="requiredOff">Required Days Off (YYYY-MM-DD)</label>
+                    <input type="date" id="requiredOff">
+                    
+                    <label for="requestedOff">Requested Days Off (YYYY-MM-DD)</label>
+                    <input type="date" id="requestedOff">
+                </div>
+
+                <div class="field-group">
+                    <label for="targetType">Target Metric</label>
+                    <select id="targetType">
+                        <option value="hours">Target Weekly Hours</option>
+                        <option value="days">Target Days per Week</option>
+                    </select>
+                    <input type="number" id="targetValue" placeholder="e.g., 20 or 4">
+                </div>
+
+                <div class="field-group">
+                    <label for="shiftStart">Desired Start Time</label>
+                    <input type="time" id="shiftStart" value="06:00">
+                    
+                    <label for="shiftEnd">Desired End Time</label>
+                    <input type="time" id="shiftEnd" value="16:00">
+                </div>
+
+                <button type="button" id="addEmployee">Add to Schedule</button>
+            </form>
+        </section>
+
+        <section id="report-container" aria-labelledby="report-title">
+            <h2 id="report-title">Generated Monthly Schedule</h2>
+            <div class="table-responsive">
+                <table id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Mon</th>
+                            <th>Tue</th>
+                            <th>Wed</th>
+                            <th>Thu</th>
+                            <th>Fri</th>
+                            <th>Sat</th>
+                            <th>Sun</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+            <button id="exportBtn">Download CSV Report</button>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
