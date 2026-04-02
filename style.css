@@ -202,3 +202,27 @@ tr:nth-child(even) {
         margin: -5px 0;
     }
 }
+/* This only triggers when the 'Print' button is pressed */
+@media print {
+    header, #form-container, #exportBtn, .secondary-btn, hr {
+        display: none !important;
+    }
+    body {
+        background-color: white;
+    }
+    section {
+        box-shadow: none;
+        padding: 0;
+    }
+    .table-responsive {
+        overflow: visible;
+    }
+    table {
+        min-width: 100%;
+        border: 2px solid black;
+    }
+    th {
+        background-color: #eee !important;
+        color: black !important;
+    }
+}
