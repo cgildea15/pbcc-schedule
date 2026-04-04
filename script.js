@@ -1,13 +1,20 @@
-// 1. HELPER: This "window." prefix is CRITICAL to fix your error
-window.addDateRow = function() {
-    console.log("Add Date button clicked!"); // This will show in your console if it works
-    const container = document.getElementById('dateListContainer');
-    
-    if (!container) {
-        console.error("Could not find the dateListContainer!");
-        return;
-    }
+// 1. FIREBASE CONFIGURATION
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
 
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// 2. UI HELPERS
+window.addDateRow = function() {
+    const container = document.getElementById('dateListContainer');
     const newRow = document.createElement('div');
     newRow.className = 'date-row';
     newRow.innerHTML = `
@@ -22,56 +29,60 @@ window.addDateRow = function() {
     container.appendChild(newRow);
 };
 
-// 2. Function to Save to Firebase
+// 3. SAVE TO FIREBASE
 async function saveEmployee() {
-    if (!window.db) {
-        alert("Connecting to database... please try again in 3 seconds.");
-        return;
-    }
-
-    const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-    
     const firstName = document.getElementById('firstName').value.trim();
+    const lastInitial = document.getElementById('lastInitial').value.trim();
+    
     if (!firstName) {
-        alert("First Name is required.");
+        alert("Please enter at least a first name.");
         return;
     }
 
     const employeeData = {
-        name: `${firstName} ${document.getElementById('lastInitial').value}.`.trim(),
-        hours: `${document.getElementById('shiftStart').value} - ${document.getElementById('shiftEnd').value}`,
-        createdAt: new Date()
+        name: `${firstName} ${lastInitial}.`.trim(),
+        target: `${document.getElementById('targetValue').value} ${document.getElementById('targetType').value}`,
+        shiftTime: `${document.getElementById('shiftStart').value} - ${document.getElementById('shiftEnd').value}`,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
     try {
-        await addDoc(collection(window.db, "employees"), employeeData);
-        alert("Success! " + firstName + " added to the list.");
+        await db.collection("employees").add(employeeData);
+        alert("Employee data synced to Palm Beach CC Portal!");
         document.getElementById('scheduleForm').reset();
-    } catch (e) {
-        console.error(e);
-        alert("Error: " + e.message);
+        document.getElementById('dateListContainer').innerHTML = '';
+    } catch (error) {
+        console.error("Firebase Error:", error);
+        alert("Sync Error: " + error.message);
     }
 }
 
-// 3. Attach the click event
-document.getElementById('addEmployee').addEventListener('click', saveEmployee);
-
-// 4. Load the Table
-async function loadTable() {
-    if (!window.db) { setTimeout(loadTable, 1000); return; }
-    const { collection, onSnapshot, query, orderBy } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-    const q = query(collection(window.db, "employees"), orderBy("createdAt", "asc"));
-    
-    onSnapshot(q, (snapshot) => {
+// 4. LOAD TABLE IN REAL-TIME
+function loadTable() {
+    db.collection("employees").orderBy("createdAt", "asc")
+    .onSnapshot((snapshot) => {
         const tbody = document.querySelector('#scheduleTable tbody');
-        if (!tbody) return;
         tbody.innerHTML = '';
+        
         snapshot.forEach((doc) => {
             const emp = doc.data();
             const row = document.createElement('tr');
-            row.innerHTML = `<td>${emp.name}</td><td>${emp.hours}</td><td>${emp.hours}</td><td>${emp.hours}</td><td>${emp.hours}</td><td>${emp.hours}</td><td>OFF</td><td>OFF</td>`;
+            row.innerHTML = `
+                <td><strong>${emp.name}</strong></td>
+                <td>${emp.target}</td>
+                <td>${emp.shiftTime}</td>
+                <td>${emp.shiftTime}</td>
+                <td>${emp.shiftTime}</td>
+                <td>${emp.shiftTime}</td>
+                <td>${emp.shiftTime}</td>
+                <td style="color: #999;">OFF</td>
+                <td style="color: #999;">OFF</td>
+            `;
             tbody.appendChild(row);
         });
     });
 }
+
+// Event Listeners
+document.getElementById('addEmployee').addEventListener('click', saveEmployee);
 window.onload = loadTable;
