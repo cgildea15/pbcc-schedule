@@ -9,7 +9,7 @@
 <body>
     <header role="banner">
         <h1>Outdoor Facilities Scheduler</h1>
-        <p>Palm Beach Country Club | Assistant Manager Portal</p>
+        <p>Palm Beach Country Club | Manager Portal</p>
     </header>
 
     <main id="app">
@@ -19,7 +19,7 @@
             <form id="scheduleForm">
                 <div class="field-group">
                     <label for="firstName">First Name *</label>
-                    <input type="text" id="firstName" required aria-required="true" placeholder="e.g. John">
+                    <input type="text" id="firstName" required placeholder="e.g. John">
                     
                     <label for="lastInitial">Last Initial</label>
                     <input type="text" id="lastInitial" maxlength="1" placeholder="e.g. D">
@@ -27,23 +27,14 @@
 
                 <div class="field-group">
                     <div class="header-with-action">
-                        <label id="date-label">Date Requests (Optional)</label>
-                        <button type="button" class="secondary-btn" onclick="addDateRow()" aria-controls="dateListContainer">
+                        <label>Date Requests (Optional)</label>
+                        <button type="button" class="secondary-btn" onclick="addDateRow()">
                             + Add Date/Range
                         </button>
                     </div>
                     
                     <div id="dateListContainer">
-                        <div class="date-row">
-                            <select class="date-type" aria-label="Type of request">
-                                <option value="required">Required OFF</option>
-                                <option value="requested">Requested OFF</option>
-                            </select>
-                            <input type="date" class="date-start" aria-label="Start date">
-                            <span class="to-label" aria-hidden="true">to</span>
-                            <input type="date" class="date-end" aria-label="End date">
                         </div>
-                    </div>
                 </div>
 
                 <div class="field-group">
@@ -69,7 +60,33 @@
 
         <hr>
 
-        <section id="report-container" aria-labelledby="report-title">
+        <section id="report-container">
             <h2 id="report-title">Generated Monthly Schedule</h2>
             <div class="table-responsive">
                 <table id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Target</th>
+                            <th>Mon</th>
+                            <th>Tue</th>
+                            <th>Wed</th>
+                            <th>Thu</th>
+                            <th>Fri</th>
+                            <th>Sat</th>
+                            <th>Sun</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
