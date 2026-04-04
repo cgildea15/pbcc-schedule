@@ -1,9 +1,8 @@
-/* PBCC Scheduler - Modern 2026 Theme */
 :root {
-    --primary-teal: #006d77;      /* Professional & Calming */
-    --accent-gold: #e29578;       /* Warm Citrus Pop */
-    --bg-cream: #f1f2f6;          /* Soft White/Cloud Dancer */
-    --text-dark: #2d3436;         /* Deep Charcoal for readability */
+    --primary-teal: #006d77;
+    --accent-gold: #e29578;
+    --bg-cream: #f1f2f6;
+    --text-dark: #2d3436;
     --white: #ffffff;
     --shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
@@ -27,11 +26,7 @@ header {
 
 h1 { color: var(--primary-teal); font-size: 1.8rem; }
 
-/* Container Styling */
-#app {
-    max-width: 900px;
-    margin: 0 auto;
-}
+#app { max-width: 1000px; margin: 0 auto; }
 
 section {
     background: var(--white);
@@ -41,7 +36,6 @@ section {
     margin-bottom: 30px;
 }
 
-/* Form Layout */
 .field-group {
     margin-bottom: 20px;
     display: flex;
@@ -49,22 +43,15 @@ section {
     gap: 15px;
 }
 
-label { 
-    display: block; 
-    font-weight: 600; 
-    margin-bottom: 5px; 
-    width: 100%;
-}
+label { font-weight: 600; width: 100%; display: block; margin-bottom: 5px; }
 
 input, select {
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    font-size: 1rem;
-    flex: 1 1 200px; /* Responsive width */
+    flex: 1 1 200px;
 }
 
-/* Dynamic Date Rows */
 .date-row {
     display: flex;
     gap: 10px;
@@ -76,20 +63,16 @@ input, select {
     margin-top: 10px;
 }
 
-/* Buttons */
 .primary-btn {
     background: var(--primary-teal);
     color: white;
-    padding: 15px 25px;
+    padding: 15px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     width: 100%;
     font-weight: bold;
-    transition: transform 0.2s;
 }
-
-.primary-btn:active { transform: scale(0.98); }
 
 .secondary-btn {
     background: var(--accent-gold);
@@ -100,39 +83,22 @@ input, select {
     cursor: pointer;
 }
 
-/* Responsive Table */
-.table-responsive {
-    overflow-x: auto; /* Allows swiping on phones */
-    margin-top: 20px;
-}
+.table-responsive { overflow-x: auto; margin-top: 20px; }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 600px; /* Prevents text from wrapping too much */
-}
+table { width: 100%; border-collapse: collapse; min-width: 800px; }
 
 th, td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
 }
 
 th { background: var(--primary-teal); color: white; }
 
 tr:hover { background-color: #f5f5f5; }
 
-/* PRINT STYLES - Makes the PDF look perfect */
 @media print {
     #form-container, .secondary-btn, header { display: none !important; }
-    body { padding: 0; background: white; }
-    section { box-shadow: none; padding: 0; }
-    th { color: black; border-bottom: 2px solid black; }
-}
-
-/* MOBILE FIXES */
-@media (max-width: 600px) {
-    .date-row { flex-direction: column; align-items: stretch; }
-    h1 { font-size: 1.4rem; }
-    body { padding: 10px; }
+    section { box-shadow: none; }
 }
